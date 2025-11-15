@@ -1,0 +1,27 @@
+---
+vector_version: 'latest'
+vector_service_ensure: 'started'
+vector_service_enable: true
+
+#Flag for using with requirements check
+vector_supported: false
+#Type of installation (package,source)
+vector_setup: 'package'
+#Flag for remove vector from host(disabled by default)
+vector_remove: false
+#Flag for full remove(incl app and config), use vector_remove + vector_remove_full
+vector_remove_full: false
+
+vector_service: 'vector'
+vector_config_path: '/etc/vector/vector.toml'
+vector_config_template: 'vector/vector.toml.j2'
+vector_binary_path: '/usr/bin/vector'
+vector_package_name: 'vector'
+
+vector_sources_files: []
+vector_endpoint: "http://clickhouse:8123" #
+vector_endpoint_database: "logs"
+vector_endpoint_table: "logs_raw"
+
+vector_endpoint_user: clickhouse
+vector_endpoint_password: .clickhouse

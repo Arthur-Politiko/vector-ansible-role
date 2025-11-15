@@ -1,0 +1,11 @@
+---
+
+- name: >-
+    Ensure {{ vector_service }}
+    is enabled: {{ vector_service_enable }}
+    and state: {{ vector_service_ensure }}
+  service:
+    name: "{{ vector_service }}"
+    enabled: "{{ vector_service_enable }}"
+    state: "{{ vector_service_ensure }}"
+  become: true

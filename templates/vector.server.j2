@@ -1,0 +1,18 @@
+sources:
+  bare_logs:
+    type: file
+    include: {{ vector_sources_files | to_json }}
+    read_from: end
+
+sinks:
+  clickhouse:
+    type: clickhouse
+    inputs:
+      - bare_logs
+    endpoint: {{ vector_endpoint }}
+    database: {{ vector_endpoint_database }}
+    table: {{ vector_endpoint_table }}
+    auth:
+      user: {{ vector_endpoint_user }}
+      password: {{ vector_endpoint_password }}
+      strategy: basic
