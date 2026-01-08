@@ -1,0 +1,127 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks: 
+    - name: Get OS info
+      # raw: sed -n 's/^ID=//p' /etc/os-release | tr -d '\n' || echo 'unknown'
+      raw: |
+        awk -F '[=]' ' /^ID\=/{print $2}' /etc/os-release
+      register: os_id
+      changed_when: false
+
+    - name: Debug OS detection
+      debug:
+        msg: "Detected OS: {{ os_id.stdout }}"
+
+#     # Update apt cache and install Python 3.9+ 
+#     # - name: Update apt cache
+#     #   raw: |
+#     #     apt-get update && apt-get install -y software-properties-common 
+#     #     add-apt-repository ppa:deadsnakes/ppa
+#     #     apt-get update
+#     #   changed_when: false
+#     #   when: os_id.stdout == 'ubuntu'
+#     #   tags: [update_apt_cache]
+
+    # - name: Install Python 3 for Ansible
+    #   raw: |
+    #     apt-get update && apt-get install -y python3 python3-pip sudo
+    #   changed_when: false
+    #   when: os_id.stdout == 'ubuntu'
+    #   tags: [install_python]
+
+#     - name: Install Python 3 for Oracle Linux
+#       raw: |
+#         dnf install -y python3 python3-pip sudo
+#       changed_when: false
+#       when: os_id.stdout != 'ubuntu'
+
+#     # - name: Install Python 3.9 on Ubuntu
+#     #   # raw: |
+#     #   #   apt-get install -y DEBIAN_FRONTEND=noninteractive python3.10 python3.10-distutils python3.10-dev
+#     #   #   update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
+#     #   raw: |
+#     #     DEBIAN_FRONTEND=noninteractive apt-get install -y python3.9
+#     #     update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
+#     #   changed_when: false
+#     #   when: os_id.stdout == 'ubuntu'
+#     #   tags: [upgrade_python]
+
+#     # - name: Install Python 3.9 on Oracle Linux
+#     #   raw: |
+#     #     dnf install -y python39 python39-pip
+#     #     alternatives --set python /usr/bin/python3.9
+#     #   changed_when: false
+#     #   when: os_id.stdout == 'ol'
+
+#     # Install pip if not present
+#     # - name: Install pip for Ubuntu
+#     #   raw: |
+#     #     apt-get update && apt-get install -y python3-pip python3-venv sudo
+#     #   # python3 -m ensurepip --upgrade
+#     #   changed_when: false
+#     #   when: os_id.stdout == 'ubuntu'
+#     #   tags: [install_pip]
+
+#     # - name: Install pip for Oracle Linux
+#     #   raw: |
+#     #     dnf install -y python3-pip python3-venv sudo
+#     #   changed_when: false
+#     #   when: os_id.stdout != 'ubuntu'
+#     #   tags: [install_pip]
+
+#     # - name: Install Python (if needed)
+#     #   raw: apt-get update && apt-get install -y python3
+#     #   when: ansible_python_interpreter is not defined
+
+
+#     # - name: Install python3-apt package
+#     #   # become: true
+#     #   ansible.builtin.package:
+#     #     name: python3-apt
+#     #     state: present
+#     #   tags: ["apt_install"]
+
+
+
+#     # Подготавливает инстансы перед применением роли
+
+# # apt update \
+# # && apt install -y --no-install-recommends openssh-server python3 python3-apt sudo ca-certificates \
+# # && rm -rf /var/lib/apt/lists/*
+
+# # useradd -m -s /bin/bash ansible \
+# # && echo 'ansible:ansible' | chpasswd \
+# # && usermod -aG sudo ansible \
+# # && echo "ansible ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ansible
+
+# # mkdir -p /var/run/sshd /home/ansible/.ssh \
+# # && chown -R ansible:ansible /home/ansible/.ssh && chmod 700 /home/ansible/.ssh
+
+# # # Настройка SSH для работы с ключами
+# # cat /root/.ssh/key.pub >> /root/.ssh/authorized_keys
+
+# # /usr/sbin/sshd -D
+
+#     # Create ansible user with sudo privileges
+#     - name: Create ansible user
+#       raw: |
+#         useradd -m -s /bin/bash ansible
+#         echo 'ansible:ansible' | chpasswd
+#         usermod -aG sudo ansible
+#         echo "ansible ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ansible
+#       changed_when: false
+#       when: os_id.stdout == 'ubuntu'
+
+#     - name: Create ansible user for Oracle Linux
+#       raw: |
+#         useradd -m -s /bin/bash ansible
+#         echo 'ansible:ansible' | chpasswd
+#         usermod -aG wheel ansible
+#         echo "ansible ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ansible
+#       changed_when: false
+#       when: os_id.stdout != 'ubuntu'

@@ -1,38 +1,74 @@
-Role Name
-=========
+# Vector Ansible Role
 
-A brief description of the role goes here.
+Ansible роль для установки и настройки Vector - агента сбора логов.
 
-Requirements
-------------
+## Требования
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Для работы с этой ролью и тестированием через Molecule, нам потребуется установить следующие зависимости:
 
-Role Variables
---------------
+### Python зависимости
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Установите необходимые Python пакеты:
 
-Dependencies
-------------
+```bash
+pip install -r requirements.txt
+```
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+### Системные зависимости
 
-Example Playbook
-----------------
+Так как для роли требуется дёргать systemctl, для запуска тестов необходим Podman:
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+**Ubuntu/Debian:**
+```bash
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+**CentOS/RHEL/Fedora:**
+```bash
+```
 
-License
--------
+## Использование Molecule
 
-BSD
+После установки зависимостей вы можете запускать тесты Molecule:
 
-Author Information
-------------------
+### Тестирование с Podman (по умолчанию)
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```bash
+molecule create -s default
+molecule converge -s default
+molecule verify -s default
+molecule destroy -s default
+```
+
+Или запустить все этапы тестирования последовательно:
+
+```bash
+molecule test -s default
+```
+
+## Структура роли
+
+- `tasks/` - Основные задачи Ansible
+- `handlers/` - Обработчики событий
+- `templates/` - Шаблоны конфигурационных файлов
+- `files/` - Статические файлы
+- `defaults/` - Переменные по умолчанию
+- `vars/` - Внутренние переменные роли
+- `meta/` - Метаданные роли
+- `molecule/` - Тесты Molecule
+
+## Параметры роли
+
+Основные параметры роли определены в `defaults/main.yml`:
+
+- `vector_version` - Версия Vector для установки
+- `vector_config` - Конфигурация Vector в формате YAML
+- `vector_service_enabled` - Включен ли сервис Vector при загрузке системы
+- `vector_service_state` - Состояние сервиса Vector (started, stopped, etc.)
+
+## Лицензия
+
+MIT
+
+## Автор
+
+Arthur Politiko

@@ -1,5 +1,8 @@
 ---
 vector_version: 'latest'
+vector_repo_url: 'https://packages.timber.io/vector/0.49.0/vector_0.49.0-1_amd64.deb'
+vector_package_file: '/tmp/vector.deb'
+
 vector_service_ensure: 'started'
 vector_service_enable: true
 
@@ -13,8 +16,10 @@ vector_remove: false
 vector_remove_full: false
 
 vector_service: 'vector'
-vector_config_path: '/etc/vector/vector.toml'
-vector_config_template: 'vector/vector.toml.j2'
+vector_config_path: "/etc/vector/vector.yaml"
+vector_config_template: "vector.server.j2"
+vector_validate_config: true
+
 vector_binary_path: '/usr/bin/vector'
 vector_package_name: 'vector'
 
@@ -22,6 +27,5 @@ vector_sources_files: []
 vector_endpoint: "http://clickhouse:8123" #
 vector_endpoint_database: "logs"
 vector_endpoint_table: "logs_raw"
-
 vector_endpoint_user: clickhouse
 vector_endpoint_password: .clickhouse

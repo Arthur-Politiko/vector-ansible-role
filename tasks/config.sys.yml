@@ -1,12 +1,23 @@
 ---
-- name: Vector | Configure vector to link to clickhouse
+- name: Vector | Configure vector
   become: true
   ansible.builtin.template:
-    src: "vector.server.j2"
-    dest: "/etc/vector/vector.yaml"
-  # owner: root
-  # group: root
-  # mode: '0644'
+    src: "{{ vector_config_template }}"
+    dest: "{{ vector_config_path }}"
+    validate: "{{ vector_binary_path }} validate --skip-healthchecks %s"
   notify: restart-vector
+  when: vector_validate_config | bool
   tags: [vector, config]
+
+
+  # - name: Vector | Configure vector to link to clickhouse
+#   become: true
+#   ansible.builtin.template:
+#     src: "vector.server.j2"
+#     dest: "/etc/vector/vector.yaml"
+#   # owner: root
+#   # group: root
+#   # mode: '0644'
+#   notify: restart-vector
+#   tags: [vector, config]
 

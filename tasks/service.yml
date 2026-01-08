@@ -9,3 +9,9 @@
     enabled: "{{ vector_service_enable }}"
     state: "{{ vector_service_ensure }}"
   become: true
+  register: service_result
+
+- name: Vector | Debug service result
+  debug:
+    var: service_result
+  when: service_result is failed

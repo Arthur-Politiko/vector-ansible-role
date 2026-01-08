@@ -1,9 +1,14 @@
 ---
 - name: Vector | Restart service
+  become: true
   # become: true
   # ansible.builtin.service:
   #   name: vector
   #   state: restarted
-  set_fact:
-    vector_service_ensure: "restarted"
+  # set_fact:
+  #   vector_service_ensure: "restarted"
+
+  ansible.builtin.service:
+    name: vector
+    state: restarted
   listen: 'restart-vector'

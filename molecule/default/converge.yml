@@ -1,0 +1,19 @@
+---
+# Purpose: bring the instance to the desired state by running the role under test.
+# Molecule calls this playbook with `molecule converge`.
+- name: Converge
+  hosts: all
+  gather_facts: true
+  vars:
+    # sources_files_custom:
+    #   - "/var/log/auth.log"
+    #   - "/var/log/syslog"  
+    vector_config_template: "vector.smoke.j2"
+    vector_config_path: "/etc/vector/vector.yaml"      
+    # vector_sources_files: "{{ vector_sources_files_custom | default([]) }}"
+  roles:
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+  # tasks:
+  #   - name: Apply role under test
+  #     ansible.builtin.include_role:
+  #       name: vector

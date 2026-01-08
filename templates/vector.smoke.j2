@@ -1,0 +1,15 @@
+data_dir: /var/lib/vector
+
+sources:
+  demo:
+    type: demo_logs
+    format: apache_common
+    interval: 0.1
+
+sinks:
+  out:
+    type: file
+    inputs: [demo]
+    path: /tmp/vector-out.log
+    encoding:
+      codec: json

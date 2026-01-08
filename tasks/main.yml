@@ -1,21 +1,45 @@
 ---
 # tasks file for vector-role
+- name: Debug role PATH
+  debug:
+    msg: "ROLE_PATH={{ role_path }}"
+  tags: ["vector", "vector.debug"]
+
 - name: Vector | Download repo file
   become: true
   ansible.builtin.get_url:
-    url: "https://packages.timber.io/vector/0.49.X/vector_0.49.0-1_amd64.deb"
-    dest: "/tmp/vector.deb"
+    url: "{{ vector_repo_url }}"
+    dest: "{{ vector_package_file }}"
     mode: '0644'
   tags: ["vector", "vector.install"]
 
 - name: Vector | Install repo file
   become: true
   ansible.builtin.apt:
-    deb: "/tmp/vector.deb"
-    # selection: install
+    deb: "{{ vector_package_file }}"
   tags: ["vector", "vector.install"]
 
-- include_tasks: 
+- name: Vector | Reload systemd daemon
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+  tags: ["vector", "vector.install"]
+
+- name: Vector | Check if service exists
+  become: true
+  ansible.builtin.command: systemctl list-unit-files {{ vector_service }}.service
+  register: vector_service_check
+  ignore_errors: true
+  changed_when: false
+  tags: ["vector", "vector.install"]
+
+- name: Vector | Fail if service does not exist
+  ansible.builtin.fail:
+    msg: "Vector service ({{ vector_service }}) was not installed correctly. Please check the installation."
+  when: vector_service_check.stdout is not search("{{ vector_service }}")
+  tags: ["vector", "vector.install"]
+
+- include_tasks:
     file: config.sys.yml
     apply:
       tags: [vector, config]
@@ -28,11 +52,12 @@
 - include_tasks: service.yml
   tags: [always]
 
-# - name: Vector | Start service
-#   become: true
-#   ansible.builtin.service:
-#     name: vector
-#     state: started
-#     enabled: true
-#   register: vector_status
-#   tags: ["vector", "vector.service"]
+- name: Vector | Start service
+  become: true
+  ansible.builtin.service:
+    name: vector
+    state: started
+    enabled: true
+  register: vector_status
+  tags: ["vector", "vector.service"]
+

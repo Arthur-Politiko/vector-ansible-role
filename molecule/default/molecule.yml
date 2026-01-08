@@ -1,0 +1,36 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: molecule/default/requirements.yml
+
+driver:
+  name: podman
+
+platforms:
+  - name: ubuntu2404
+    image: docker.io/geerlingguy/docker-ubuntu2404-ansible:latest
+    container_name: ubuntu2404
+    command: /sbin/init
+    privileged: true
+    tmpfs:
+      /run: rw
+      /tmp: rw
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  - name: ubuntu2204
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible:latest
+    container_name: ubuntu2204
+    command: /sbin/init
+    privileged: true
+    tmpfs:
+      /run: rw
+      /tmp: rw
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+
+provisioner:
+  name: ansible
+
+verifier:
+  name: ansible
