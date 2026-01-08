@@ -1,0 +1,38 @@
+---
+# tasks file for vector-role
+- name: Vector | Download repo file
+  become: true
+  ansible.builtin.get_url:
+    url: "https://packages.timber.io/vector/0.49.X/vector_0.49.0-1_amd64.deb"
+    dest: "/tmp/vector.deb"
+    mode: '0644'
+  tags: ["vector", "vector.install"]
+
+- name: Vector | Install repo file
+  become: true
+  ansible.builtin.apt:
+    deb: "/tmp/vector.deb"
+    # selection: install
+  tags: ["vector", "vector.install"]
+
+- include_tasks: 
+    file: config.sys.yml
+    apply:
+      tags: [vector, config]
+  tags: [vector, config]
+  when: not vector_remove|bool
+
+- name: "Notify Handlers Now"
+  meta: flush_handlers
+
+- include_tasks: service.yml
+  tags: [always]
+
+# - name: Vector | Start service
+#   become: true
+#   ansible.builtin.service:
+#     name: vector
+#     state: started
+#     enabled: true
+#   register: vector_status
+#   tags: ["vector", "vector.service"]
